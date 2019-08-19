@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./lib/vue-2.4.0.js"></script>
+  <!-- 注意：vue-resource 依赖于 Vue，所以先后顺序要注意  -->
+  <!-- 引入了vue-resource就可以使用this.$http.get/post/jsonp等方法 -->
+  <script src="./lib/vue-resource-1.3.4.js"></script>
+  <!-- <script src="./lib/jquery-3.4.1.min.js"></script>
+  <script src="./lib/axios.min.js"></script> -->
+  <!-- 表格样式 -->
+  <link rel="stylesheet" href="./lib/bootstrap-3.3.7.css">
+</head>
+
+<body>
+  <div id="app">
+    <div class="panel panel-primary">
+      <div class="panel-heading" style="text-align: center">
+        <h3 class="panel-title">陈情令</h3>
+      </div>
+      <div class="panel-body form-inline">
+        <label>
+          Id:
+          <input type="text" class="form-control" v-model="id">
+        </label>
+
+        <label>
+          Name:
+          <input type="text" class="form-control" v-model="name">
+        </label>
+
+        <input type="button" value="添加" class="btn btn-primary" @click="add()">
+
+        <label>
+          搜索名称关键字：
+          <input type="text" class="form-control" v-model="keywords">
+        </label>
+      </div>
+    </div>
+    <table class="table table-bordered table-hover table-striped">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Name</th>
+          <th>NickName</th>
+          <th>Operation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in list" :key="item.id">
+          <td>{{ item.id }}</td>
+          <td v-text="item.name"></td>
+          <td>{{ item.nickname }}</td>
+          <td>
+            <a href="" @click.prevent="del(item.id)">删除</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    var vm = new Vue({
+      el: '#app',
+      data: {
+        id: '',
+        name: '',
+        keywords: '', // 搜索的关键字
+        list: []
+      },
+      created(){
+          this.getAllList();
+      },
+      methods: {
+        // 获取数据列表
+        getAllList() {
+          // 方式一：vue-resource
+          this.$http.get('http://localhost:3004/list').then(function (res) {
+            this.list = res.data;
+            console.log('res.data:', res.data)
+          })
+
+          // 方式二：jQuery的ajax
+          // $.ajax({
+          //   type:"get",
+          //   url:"http://vue.studyit.io/api/getlunbo",
+          //   success:function(res){
+          //       console.log(res.body);
+          //   },
+          //   error:function(){
+          //       console.log(66666)
+          //   }
+          // });
+
+          // 方式三：axios
+          //    let _this = this;
+          //    axios.get('http://localhost:3004/list').then(res => {
+          //      this.list = res.data;
+          //      console.log('this.list:', this.list);
+          //    }).catch(err => {
+          //      console.log(err)
+          //    })
+        },
+        add() { // 添加数据
+          // var car = { id: this.id, name: this.name, ctime: new Date() }
+          // this.list.push(car)
+          // this.id = this.name = ''
+
+          let _this = this;
+          let car = { id: this.id, name: this.name, ctime: "2019" }
+          this.$http.post('http://localhost:3004/list', car, { emulateJSON: true }).then(res => {
+            this.postInfo();
+          })
+
+          //   $.ajax({
+          //     type:"post",
+          //     url:"http://localhost:3004/list",
+          //     data:{
+          //       "id": this.id, 
+          //       "name": this.name,
+          //        "ctime": "2019"
+          //     }
+          //   })
+          this.getInfo();
+        },
+        del(id) { // 根据Id删除数据
+          // var index = this.list.findIndex(item => {
+          //   if (item.id == id) {
+          //     return true;
+          //   }
+          // })
+          // this.list.splice(index, 1)
+        },
+        search(keywords) {
+          return this.list.filter(item => {
+            if (item.name.includes(keywords)) {
+              return item
+            }
+          })
+        }
+      }
+    });
+  </script>
+</body>
+<style>
+.panel-primary>.panel-heading {
+    color: #fff;
+    background-color: #383c3e!important;
+    border-color: #0a141d!important;
+}
+.panel-primary {
+    border-color: #958d8c!important;
+}
+.btn-primary {
+    color: #fff;
+    background-color: #840f0a!important;
+    border-color: #802509!important;
+}
+</style>
+</html>
