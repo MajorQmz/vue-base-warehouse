@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./lib/vue-2.4.0.js"></script>
+  <!-- 注意：vue-resource 依赖于 Vue，所以先后顺序要注意  -->
+  <!-- 引入了vue-resource就可以使用this.$http.get/post/jsonp等方法 -->
+  <script src="./lib/vue-resource-1.3.4.js"></script>
+  <!-- <script src="./lib/jquery-3.4.1.min.js"></script>
+  <script src="./lib/axios.min.js"></script> -->
+  <!-- 表格样式 -->
+  <link rel="stylesheet" href="./lib/bootstrap-3.3.7.css">
+</head>
+
+<body>
+  <div id="app">
+    <div class="panel panel-primary">
+      <div class="panel-heading" style="text-align: center">
+        <h3 class="panel-title">陈情令celebraties</h3>
+      </div>
+      <div class="panel-body form-inline">
+        <label>
+          Id:
+          <input type="text" class="form-control" v-model="id">
+        </label>
+        <label>
+          Name:
+          <input type="text" class="form-control" v-model="name">
+        </label>
+        <label>
+            Nickname:
+            <input type="text" class="form-control" v-model="nickname">
+          </label>
+          &nbsp;&nbsp;
+        <input type="button" value="添加" class="btn btn-primary" @click="add()">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </div>
+    </div>
+    <table class="table table-bordered table-hover table-striped">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Name</th>
+          <th>NickName</th>
+          <th>Operation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in list" :key="item.id">
+          <td>{{ item.id }}</td>
+          <td v-text="item.name"></td>
+          <td>{{ item.nickname }}</td>
+          <td>
+            <a href="" @click.prevent="del(item.id)">删除</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // vue-resource的接口根域名以及emulateJson的全局配置
+    Vue.http.options.root = 'http://localhost:3000/';
+    Vue.http.options.emulateJSON = true;
+    var vm = new Vue({
+      el: '#app',
+      data: {
+        id: '',
+        name: '',
+        nickname: '',
+        keywords: '', // 搜索的关键字
+        list: [],
+        searchId:''
+      },
+      created(){
+          this.getAllList();
+      },
+      methods: {
+        // 获取数据列表
+        getAllList() {
+          // 方式一：vue-resource
+          this.$http.get('list').then(function (res) {
+            this.list = res.data;
+            console.log('res.data:', res.data)
+          })
+        },
+        add() {
+          // 添加数据用this.$http.post方法，三个参数：
+          //1.url
+          //2.提交给服务器的参数（对象形式）
+          //3.配置对象，指定了以表单形式提交({ emulateJSON:true })
+          this.list.map(item => {
+            if(item.id == this.id){
+              alert('此id已存在!');
+              return;
+            }else if(item.name == this.name){
+              alert('此name已存在!');
+              return;
+            }else if(item.nickname == this.nickname){
+              alert('此nicknmae已存在!');
+              return;
+            }
+          });
+          let _this = this;
+          let celebrate = { id: this.id, name: this.name, nickname: this.nickname }
+          this.$http.post('list', celebrate, { emulateJSON: true }).then(res => {
+              alert('添加成功!');              
+              this.getAllList();
+          })
+        },
+        del(id) { // 根据Id删除数据
+          let _this = this;
+          this.$http.delete('list/' + id).then(res => {
+            console.log("删除后返回res.body:", res.body);
+            alert('删除成功!');              
+              _this.getAllList();
+          })
+        }
+      }
+    });
+  </script>
+</body>
+<style>
+.panel-primary>.panel-heading {
+    color: #fff;
+    background-color: #383c3e!important;
+    border-color: #0a141d!important;
+}
+.panel-primary {
+    border-color: #958d8c!important;
+}
+.btn-primary {
+    color: #fff;
+    background-color: #840f0a!important;
+    border-color: #802509!important;
+}
+</style>
+</html>
