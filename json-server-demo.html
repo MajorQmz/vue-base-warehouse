@@ -27,18 +27,26 @@
           Id:
           <input type="text" class="form-control" v-model="id">
         </label>
-
         <label>
           Name:
           <input type="text" class="form-control" v-model="name">
         </label>
-
-        <input type="button" value="添加" class="btn btn-primary" @click="add()">
-
         <label>
+            Nickname:
+            <input type="text" class="form-control" v-model="nickname">
+          </label>
+          &nbsp;&nbsp;
+        <input type="button" value="添加" class="btn btn-primary" @click="add()">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <label>
+            id搜索：
+            <input type="text" class="form-control" v-model="searchId" @keyup.enter="searchById">
+          </label>
+        <!-- <label>
           搜索名称关键字：
-          <input type="text" class="form-control" v-model="keywords">
-        </label>
+          <input type="text" class="form-control" v-model="keywords" @keyup.enter="searchByKeyWord">
+        </label> -->
+        
       </div>
     </div>
     <table class="table table-bordered table-hover table-striped">
@@ -69,8 +77,10 @@
       data: {
         id: '',
         name: '',
+        nickname: '',
         keywords: '', // 搜索的关键字
-        list: []
+        list: [],
+        searchId:''
       },
       created(){
           this.getAllList();
@@ -79,7 +89,7 @@
         // 获取数据列表
         getAllList() {
           // 方式一：vue-resource
-          this.$http.get('http://localhost:3004/list').then(function (res) {
+          this.$http.get('http://localhost:3000/list').then(function (res) {
             this.list = res.data;
             console.log('res.data:', res.data)
           })
@@ -87,61 +97,72 @@
           // 方式二：jQuery的ajax
           // $.ajax({
           //   type:"get",
-          //   url:"http://vue.studyit.io/api/getlunbo",
+          //   url:"http://localhost:3000/list",
           //   success:function(res){
           //       console.log(res.body);
           //   },
           //   error:function(){
-          //       console.log(66666)
+          //       console.log('获取失败');
           //   }
           // });
 
           // 方式三：axios
           //    let _this = this;
-          //    axios.get('http://localhost:3004/list').then(res => {
+          //    axios.get('http://localhost:3000/list').then(res => {
           //      this.list = res.data;
           //      console.log('this.list:', this.list);
           //    }).catch(err => {
           //      console.log(err)
           //    })
         },
-        add() { // 添加数据
-          // var car = { id: this.id, name: this.name, ctime: new Date() }
-          // this.list.push(car)
-          // this.id = this.name = ''
-
+        add() {
+          // 添加数据用this.$http.post方法，三个参数：
+          //1.url
+          //2.提交给服务器的参数（对象形式）
+          //3.配置对象，指定了以表单形式提交({ emulateJSON:true })
+          this.list.map(item => {
+            if(item.id == this.id){
+              alert('此id已存在!');
+              return;
+            }else if(item.name == this.name){
+              alert('此name已存在!');
+              return;
+            }else if(item.nickname == this.nickname){
+              alert('此nicknmae已存在!');
+              return;
+            }
+          });
           let _this = this;
-          let car = { id: this.id, name: this.name, ctime: "2019" }
-          this.$http.post('http://localhost:3004/list', car, { emulateJSON: true }).then(res => {
-            this.postInfo();
+          let celebrate = { id: this.id, name: this.name, nickname: this.nickname }
+          this.$http.post('http://localhost:3000/list', celebrate, { emulateJSON: true }).then(res => {
+              alert('添加成功!');              
+              this.getAllList();
           })
-
-          //   $.ajax({
-          //     type:"post",
-          //     url:"http://localhost:3004/list",
-          //     data:{
-          //       "id": this.id, 
-          //       "name": this.name,
-          //        "ctime": "2019"
-          //     }
-          //   })
-          this.getInfo();
         },
         del(id) { // 根据Id删除数据
-          // var index = this.list.findIndex(item => {
-          //   if (item.id == id) {
-          //     return true;
-          //   }
-          // })
-          // this.list.splice(index, 1)
+          let _this = this;
+          this.$http.delete('http://localhost:3000/list/' + id).then(res => {
+            console.log("删除后返回res.body:", res.body);
+            alert('删除成功!');              
+              _this.getAllList();
+          })
         },
-        search(keywords) {
-          return this.list.filter(item => {
-            if (item.name.includes(keywords)) {
-              return item
-            }
+        searchById(){ // 根据Id查找数据
+          let _this = this;
+          this.$http.get('http://localhost:3000/list/' + this.searchId).then(res => {
+            console.log("查找id返回的res.body:", res.body);
+            _this.list = [];
+            _this.list.push(res.body);
           })
         }
+        // 关键字搜索（前端筛选）
+        // searchByKeyWord(keywords) {
+        //   this.list = this.list.filter(item => {
+        //     if (item.name.includes(keywords)) {
+        //       return item;
+        //     }
+        //   })
+        // }
       }
     });
   </script>
