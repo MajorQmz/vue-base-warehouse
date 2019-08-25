@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    </head>
+    <body>
+        <div id="app">
+            <input class="myButton" style="background-color:green" v-show="!ifShow" type="button" value="showEnter" @click="ifShow=!ifShow">
+            <input class="myButton" v-show="ifShow" type="button" value="showLeave" @click="ifShow=!ifShow"><br/><br/>
+           <transition name="qmz">
+               <p v-if="ifShow">魏无羡&蓝忘机</p>
+           </transition>
+        </div>
+    </body>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data(){
+                return{
+                    ifShow:false
+                }
+            },
+        })
+    </script>
+    <style>
+        /* 点击showEenter，则效果为以下3个样式类 */
+        .qmz-enter {
+            color: greenyellow;
+            font-size:12px;
+        }
+        .qmz-enter-to {
+            color: plum;
+            font-size:16px;
+        }
+        .qmz-enter-active {
+            transition: all 1s ease;
+        }
+
+
+        /* 点击showEenter，则效果为以下3个样式类 */
+        /* .qmz-leave的样式没有显示，不懂为啥 */
+        .qmz-leave {
+            color: yellow;
+            font-size:12px;
+        }
+        .qmz-leave-to {
+            color: red;
+            font-size:12px;
+        }
+        .qmz-leave-active {
+            transition: all 2s ease;
+        }
+
+        
+        .myButton{
+            padding: 3px 5px;
+            border-radius: 4px;
+            outline: none;
+            border: 1px solid silver;
+            background-color: greenyellow
+        }
+    </style>
+</html>

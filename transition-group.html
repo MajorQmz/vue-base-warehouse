@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="./lib/vue-2.4.0.js"></script>
+        <script src="./lib/iview.min.js"></script>
+        <script src="./lib/vue-resource-1.3.4.js"></script>
+    </head>
+    <body>
+        <div id="app">
+            <transition-group name="myGroup">
+                    <li class="mytable" v-for="item in list" :key="item.id">{{item.id}}----{{item.name}}----{{item.nickname}}</li>
+            </transition-group>
+            
+        </div>
+    </body>
+
+    <script>
+        Vue.http.options.root = 'http://localhost:3000/'
+        var vm = new Vue({
+            el:'#app',
+            data() {
+                return {
+                    list:[],
+                }
+            },
+            created() {
+                this.$http.get('list').then(res => {
+                    this.list = res.data;
+                })
+            },
+            methods:{},
+
+        })
+    </script>
+    <style>
+        .mytable {
+            border: 1px dashed silver;
+            line-height: 30px;
+        }
+        .mytable:hover {
+            background-color:hotpink; 
+        }
+        .myGroup-enter {
+            opacity: 0;
+            transform: translateY(80px);
+        }
+        .myGroup-enter-active, .myGroup-leave-active {
+            transition: all 2s ease;
+        }
+    </style>
+</html>
