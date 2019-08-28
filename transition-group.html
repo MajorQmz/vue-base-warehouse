@@ -11,8 +11,12 @@
     </head>
     <body>
         <div id="app">
-            <transition-group name="myGroup">
-                    <li class="mytable" v-for="item in list" :key="item.id">{{item.id}}----{{item.name}}----{{item.nickname}}</li>
+            <!-- 通过v-for渲染的dom，需要用<transition-group></transition-group>包围起来，并且指定:key -->
+            <!-- target指定把transition-group渲染成什么标签 -->
+            <transition-group name="myGroup" target="ul">
+                    <li class="mytable" v-for="(item,index) in list" :key="item.id" @click="del(index)">
+                        {{item.id}}----{{item.name}}----{{item.nickname}}
+                    </li>
             </transition-group>
             
         </div>
@@ -32,7 +36,12 @@
                     this.list = res.data;
                 })
             },
-            methods:{},
+            methods:{
+                del(i){
+
+                    this.list.splice(i,1);
+                }
+            },
 
         })
     </script>
@@ -42,14 +51,22 @@
             line-height: 30px;
         }
         .mytable:hover {
-            background-color:hotpink; 
+            background-color:rgb(228, 230, 225); 
         }
-        .myGroup-enter {
+        .myGroup-enter, .myGroup-leave-to{
             opacity: 0;
             transform: translateY(80px);
         }
         .myGroup-enter-active, .myGroup-leave-active {
             transition: all 2s ease;
+        }
+
+        /* v-move和v-leave-active实现删除一行，后面元素移位的动画效果 */
+        .myGroup-move{
+            transition: all 0.6s ease;
+        }
+        .myGroup-leave-active{
+            position: absolute;
         }
     </style>
 </html>
