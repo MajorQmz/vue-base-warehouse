@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div v-for="test in allTestData" v-if="currentPage === test.pageNo" :class="['page', test.testNo]">
+        <p class="title1"><span>0{{test.pageNo}}</span></p>
+        <ul class="test-list">
+            <li v-for="item in test.dataList" class="item" @click="clickMe(item)">
+              <span :class="['item-num', item.headName]"></span>
+              <span>{{item.value}}</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </body>
+  <script>
+      var vm = new Vue({
+        el: "#app",
+        data () {
+          return {
+            currentPage: 1, // 当前所在页面
+            allTestData: [
+              {
+                dataList: [
+                  {value: 'A、沙漠-暗藏法老的宝物', headName: 'item-num-a'},
+                  {value: 'B、草原-遇见神奇的动物', headName: 'item-num-b'},
+                  {value: 'C、游乐场-旋转跳跃我闭着眼', headName: 'item-num-c'}
+                ],
+                testNo: 'page-test1',
+                pageNo: 1
+              },
+              {
+                dataList: [
+                  {value: 'A、寻找水源附近的神秘山洞', headName: 'item-num-a'},
+                  {value: 'B、SOS！，需要援助，疯狂寻找小伙伴', headName: 'item-num-b'},
+                  {value: 'C、搭建小茅屋，自己动手丰衣足食', headName: 'item-num-c'}
+                ],
+                testNo: 'page-test2',
+                pageNo: 2
+              },
+              {
+                dataList: [
+                  {value: 'A、城堡庄园-走向营业致富道路', headName: 'item-num-a'},
+                  {value: 'B、美术馆博物-与我高冷气质匹配', headName: 'item-num-b'},
+                  {value: 'C、游乐场-旋转跳跃我闭着眼', headName: 'item-num-c'}
+                ],
+                testNo: 'page-test3',
+                pageNo: 3
+              },
+              {
+                dataList: [
+                  {value: 'A、来参观学习精湛的建筑工艺', headName: 'item-num-a'},
+                  {value: 'B、不安好心，有妖气，全体戒备', headName: 'item-num-b'},
+                  {value: 'C、邀请你参加魔龙家族的欢乐派对', headName: 'item-num-c'}
+                ],
+                testNo: 'page-test4',
+                pageNo: 4
+              },
+              {
+                dataList: [
+                  {value: 'A、神奇药剂-喝下去变得力大无穷', headName: 'item-num-a'},
+                  {value: 'B、强力装备-伤害爆表的附魔神剑和精金护甲', headName: 'item-num-b'},
+                  {value: 'C、魔力道具-飞天遁地的抓钩，喷气背包等', headName: 'item-num-c'}
+                ],
+                testNo: 'page-test5',
+                pageNo: 5
+              },
+              {
+                dataList: [
+                  {value: 'A、开启探险之旅，解开这片土地的终极秘密', headName: 'item-num-a'},
+                  {value: 'B、寻找更多伙伴，一起畅玩世界', headName: 'item-num-b'},
+                  {value: 'C、搭建完美的家园，过上自给自足的生活', headName: 'item-num-c'}
+                ],
+                testNo: 'page-test6',
+                pageNo: 6
+              }
+            ],
+            
+          }
+        },
+        methods: {
+          clickMe(item){
+            console.log('你选择了：', item.value);
+            this.currentPage = this.currentPage+1;
+            if(this.currentPage > 6){
+              alert("恭喜你顺利通过测试！");
+            }
+          }
+        }
+      })
+  </script>
+  <style>
+    .page{
+      width: 400px;
+      height: 400px;
+      border: 1px solid greenyellow;
+    }
+    .title1{
+      line-height: 24px;
+      font-weight: bolder;
+      text-align: center;
+    }
+    .title1 span{
+      display: inline-block;
+      padding-bottom: 5px;
+      border-bottom: 2px solid black;
+      font-size: 30px;
+      font-family: "方正舒体"
+    }
+     .test-list li, .item{
+      display: block;
+      list-style-type: none;
+      height:40px;
+      line-height: 34px;
+    }
+    .test-list li :hover{
+      cursor: pointer;
+      font-weight: 700;
+      color: greenyellow;
+    }
+    .item-num{
+      color:bisque;
+    }
+    .item-num-a{
+      font-size: 30px;
+    }
+    .item-num-b{
+      font-size: 40px;
+    }
+    .item-num-c{
+      font-size: 50px;
+    }
+  </style>
+</html>
+

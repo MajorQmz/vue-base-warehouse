@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+        <script src='./lib/vue-2.4.0.js'></script>
+    </head>
+    <body>
+        <div id="qmz">
+            <my-component></my-component>
+            <!-- 下面的大写驼峰式会报错，定义的时候可以使用大写，使用的时候改为小写 -->
+            <!-- <myComponent></myComponent> -->
+        </div>
+    </body>
+    <script>
+    var me = Vue.extend({
+        template:`<div>i like xiaozhan</div>`
+    });
+    Vue.component('myComponent', me);
+    var vm = new Vue({
+        el: "#qmz",
+        data () {
+            return {
+                wwx: '魏无羡'
+            }
+        }
+    })
+    </script>
+</html>
